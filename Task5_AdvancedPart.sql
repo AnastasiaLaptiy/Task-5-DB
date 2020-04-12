@@ -12,7 +12,19 @@ USE [FlowerSupplyDB];
  Входящие параметры: Id вида цветов, Id плантации, количество. Возвращаемое значение в формате true/false.
 */
 
-CREATE FUNCTION [dbo].[isRealFlowerSupply](
+/* > т.е. предполагается, что у нас уже заполнено хотя бы поле IdSupply?
+ > если это сказано просто для понимания, то ок, а если это надо учитывать, то, чтобы понять закрыта ли поставка нам на вход нужен ее  IdSupply
+ > опять же, если мы проверили, что можно создать поставку и вставили новую запись, 
+	получили айди и все остальные параметры, то я бы лучше создала отдельную функцию для этого,
+	потому что будет заморочно проверять важные параметры с кучей ограничений, 
+	которые не относятся к проверке"возможна ли поставка с таким кол-вом цветов"
+ > просто для проверки тру/фолс нам не нужно тут учитывать закрыта ли поставка, 
+   поскольку для тех, которые уже закрыты (с них итак уже кол-во цветов списалось), а те которые еще есть на плантации мы и проверим как раз
+ > другое дело, если мы сразу знаем IdSupply и проверяем закрыта ли она, то да, так имеет смысл*/
+
+-- DROP FUNCTION IF EXISTS [dbo].[isFlowerSupplyReal];
+
+CREATE FUNCTION [dbo].[isFlowerSupplyReal](
 	@IdFlower INT,
 	@IdPlantation INT,
 	@Amount INT
@@ -20,7 +32,7 @@ CREATE FUNCTION [dbo].[isRealFlowerSupply](
 	RETURNS bit	
 		AS 
 		BEGIN
-		DECLARE @ResultVar bit = 0
+		DECLARE @Result bit = 0
 			IF EXISTS (
 				SELECT * 					
 					FROM
@@ -28,15 +40,24 @@ CREATE FUNCTION [dbo].[isRealFlowerSupply](
 					[FlowerSupplyDB].[dbo].[Plantation] [p],
 					[FlowerSupplyDB].[dbo].[Flower] [f]
 						WHERE
-						[pl].[FlowerId]=[f].[Id]
-					and [pl].[PlantationId]=[p].[Id]
+						[pl].[FlowerId] = [f].[Id]
+					and [pl].[PlantationId] = [p].[Id]
 					and [pl].[PlantationId] = @IdPlantation
 					and [pl].[FlowerId] = @IdFlower
-					and [pl].[Amount]>=@Amount)
-     BEGIN
-        SELECT @ResultVar = 1
-    END
-	return @ResultVar
-	end;
+					and [pl].[Amount] >= @Amount)
+					 BEGIN
+						SELECT @Result = 1
+					 END
+			ELSE
+				BEGIN
+					SELECT @Result = 0;
+				END
+	RETURN @Result
+END;
 
-select [dbo].[isRealFlowerSupply](1,1,1);
+/*Test*/
+
+SELECT [dbo].[isFlowerSupplyReal](5,3,15); --0
+
+
+SELECT [dbo].[isFlowerSupplyReal](1,1,200); --1
