@@ -2,7 +2,7 @@ CREATE DATABASE [FlowerSupplyDB];
 
 USE [FlowerSupplyDB];
 
-/*сформировать скрипты создания каждой таблицы*/
+/*creating scripts for tables*/
 
 CREATE TABLE [FlowerSupplyDB].[dbo].[Flower](
 	[Id] INT PRIMARY KEY IDENTITY(1,1),
