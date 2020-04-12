@@ -1,3 +1,4 @@
+SELECT CONVERT (varchar(256), SERVERPROPERTY('collation')); 
 USE [FlowerSupplyDB];
 
 /*SELECT*/
@@ -9,9 +10,8 @@ SELECT
 		FROM 
 		[FlowerSupplyDB].[dbo].[Plantation] [p];
 
-/*- данные по плантации: список цветов и их количество.
- Столбцы в результате: Id плантации, имя, адрес, количество */
-
+/*- данные по плантации: список цветов и их количество. 
+Столбцы в результате: Id плантации, имя, адрес, количество;  */
 SELECT 
 	[p].*,
 	[pf].[Amount], 
