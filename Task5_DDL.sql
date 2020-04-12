@@ -58,7 +58,7 @@ CREATE TABLE [FlowerSupplyDB].[dbo].[SupplyFlower](
 	FOREIGN KEY ([FlowerId]) REFERENCES [Flower](Id));
 
 /*add field for flower name*/
-/*v1*/
+/*v1 [not null] coz have already had records in the table*/
 
 ALTER TABLE [FlowerSupplyDB].[dbo].[Flower]
 	ADD
@@ -66,7 +66,7 @@ ALTER TABLE [FlowerSupplyDB].[dbo].[Flower]
 
 /*v2*/
 
-/*с латиницей*/
+/*collate case*/
 
 ALTER TABLE [FlowerSupplyDB].[dbo].[Flower]
 	ADD

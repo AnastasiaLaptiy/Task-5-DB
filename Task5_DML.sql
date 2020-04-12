@@ -2,7 +2,7 @@ USE [FlowerSupplyDB];
 
 /*SELECT*/
 
-/*список плантаций*/
+/*plantation list*/
 
 SELECT 
 	[p].[Name] 
