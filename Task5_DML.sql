@@ -21,7 +21,7 @@ SELECT
 		[FlowerSupplyDB].[dbo].[Flower] [f]
 			WHERE
 			[pf].[PlantationId] = [p].[Id]
-		and [pf].[FlowerId] = [f].[Id];
+			and [pf].[FlowerId] = [f].[Id];
 
 SELECT 
 	[p].*, 
