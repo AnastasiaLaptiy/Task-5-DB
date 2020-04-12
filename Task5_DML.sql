@@ -51,7 +51,7 @@ SELECT
 		[FlowerSupplyDB].[dbo].[PlantationFlower] [pf]
 			WHERE
 			[pf].[PlantationId] = [p].[Id]
-		and [pf].[FlowerId] = [f].[Id]
+			and [pf].[FlowerId] = [f].[Id]
 				GROUP BY
 				[f].[Id], [f].[Name];
 				
@@ -71,8 +71,8 @@ SELECT
 		[FlowerSupplyDB].[dbo].[PlantationFlower] [pf]
 			WHERE
 			[pf].[PlantationId] = [p].[Id]
-		and [pf].[FlowerId] = [f].[Id]
-		and [pf].[Amount] > 1000
+			and [pf].[FlowerId] = [f].[Id]
+			and [pf].[Amount] > 1000
 				GROUP BY
 				[f].[Id], [f].[Name];
 
@@ -91,9 +91,9 @@ SELECT
 		[FlowerSupplyDB].[dbo].[SupplyFlower] [sf]
 			WHERE
 			[f].Id = [sf].[FlowerId]
-		and [s].[Id] = [sf].[SupplyId]
-		and [p].[Id] = [s].[PlantationId]
-		and [p].[Name] = 'Ame'
+			and [s].[Id] = [sf].[SupplyId]
+			and [p].[Id] = [s].[PlantationId]
+			and [p].[Name] = 'Ame'
 				GROUP BY
 				[f].[Id], 
 				[f].[Name];
@@ -112,8 +112,8 @@ SELECT
 		[FlowerSupplyDB].[dbo].[Supply] [s]
 			WHERE
 			[w].Id = [s].[WarehouseId]
-		and [p].[Id] = [s].[PlantationId]
-		and MONTH([s].[ClosedDate]) = MONTH(getdate());
+			and [p].[Id] = [s].[PlantationId]
+			and MONTH([s].[ClosedDate]) = MONTH(getdate());
 
 /*INSERT*/
 
@@ -141,5 +141,5 @@ UPDATE [FlowerSupplyDB].[dbo].[SupplyFlower]
 		[Amount]=15
 			WHERE 
 				[FlowerSupplyDB].[dbo].[SupplyFlower].[SupplyId] = 1
-			and [FlowerSupplyDB].[dbo].[SupplyFlower].[FlowerId] = 1;
+				and [FlowerSupplyDB].[dbo].[SupplyFlower].[FlowerId] = 1;
 

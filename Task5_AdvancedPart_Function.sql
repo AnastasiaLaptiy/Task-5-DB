@@ -24,6 +24,7 @@ USE [FlowerSupplyDB];
 
 -- DROP FUNCTION IF EXISTS [dbo].[isFlowerSupplyReal];
 
+GO
 CREATE FUNCTION [dbo].[isFlowerSupplyReal](
 	@IdFlower INT,
 	@IdPlantation INT,
@@ -48,12 +49,9 @@ CREATE FUNCTION [dbo].[isFlowerSupplyReal](
 					 BEGIN
 						SELECT @Result = 1
 					 END
-			ELSE
-				BEGIN
-					SELECT @Result = 0;
-				END
 	RETURN @Result
 END;
+GO
 
 /*Test*/
 
