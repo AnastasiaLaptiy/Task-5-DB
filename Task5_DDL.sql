@@ -57,8 +57,17 @@ CREATE TABLE [FlowerSupplyDB].[dbo].[SupplyFlower](
 	FOREIGN KEY ([SupplyId]) REFERENCES [Supply](Id),
 	FOREIGN KEY ([FlowerId]) REFERENCES [Flower](Id));
 
-/*в таблицу видов цветов добавить поле для названия вида на латинице*/
+/*add field for flower name*/
+/*v1*/
 
 ALTER TABLE [FlowerSupplyDB].[dbo].[Flower]
 	ADD
 		[Name] VARCHAR(30) NOT NULL DEFAULT 'new column';
+
+/*v2*/
+
+/*с латиницей*/
+
+ALTER TABLE [FlowerSupplyDB].[dbo].[Flower]
+	ADD
+		[Name1] VARCHAR(30) COLLATE Latin1_General_100_CI_AI NOT NULL DEFAULT 'new column';
