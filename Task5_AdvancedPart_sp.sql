@@ -49,7 +49,7 @@ AS
 			BEGIN
 				UPDATE [FlowerSupplyDB].[dbo].[SupplyFlower]
 					SET
-					[Amount]=@Amount
+					[Amount] = @Amount
 						WHERE 
 						[SupplyId] = @IdSupply
 						and [FlowerId] = @IdFlower;
@@ -75,7 +75,7 @@ AS
 			BEGIN
 			UPDATE [FlowerSupplyDB].[dbo].[PlantationFlower]
 				SET
-				[Amount]=[Amount]-@Amount
+				[Amount] = [Amount]-@Amount
 					WHERE 
 					[PlantationId] = @IdPlantation
 					and [FlowerId] = @IdFlower;
@@ -132,7 +132,7 @@ EXEC	@return_value = [dbo].[sp_ClosedSupply]
 		@IdFlower = 4,
 		@IdPlantation = 4,
 		@IdWarehouse = 3,
-		@Amount = 20
+		@Amount = 22220
 
 SELECT	'Return Value' = @return_value
 

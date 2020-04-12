@@ -10,7 +10,8 @@ SELECT
 		[FlowerSupplyDB].[dbo].[Plantation] [p];
 
 /*- данные по плантации: список цветов и их количество. 
-Столбцы в результате: Id плантации, имя, адрес, количество;  */
+   Столбцы в результате: Id плантации, имя, адрес, ИМЯ ВИДА ЦВЕТОВ, количество  */
+/*v1*/
 SELECT 
 	[p].*,
 	[pf].[Amount], 
@@ -23,6 +24,7 @@ SELECT
 			[pf].[PlantationId] = [p].[Id]
 			and [pf].[FlowerId] = [f].[Id];
 
+/*v2*/
 SELECT 
 	[p].*, 
 	SUM([pf].[Amount]) as "Flowers per plantation"
@@ -88,12 +90,16 @@ SELECT
 		[FlowerSupplyDB].[dbo].[Flower] [f],
 		[FlowerSupplyDB].[dbo].[Plantation] [p],
 		[FlowerSupplyDB].[dbo].[Supply] [s],
-		[FlowerSupplyDB].[dbo].[SupplyFlower] [sf]
+		[FlowerSupplyDB].[dbo].[SupplyFlower] [sf],
+		[FlowerSupplyDB].[dbo].[Status] [st]
 			WHERE
 			[f].Id = [sf].[FlowerId]
 			and [s].[Id] = [sf].[SupplyId]
 			and [p].[Id] = [s].[PlantationId]
-			and [p].[Name] = 'Ame'
+			and [st].[Id] = [s].[StatusId]
+			and [p].[Id] = 1
+			--and [p].[Name] = 'Ame'
+			and [st].[Name] = 'Scheduled'
 				GROUP BY
 				[f].[Id], 
 				[f].[Name];
