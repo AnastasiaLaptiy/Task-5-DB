@@ -131,9 +131,9 @@ AS
 			END
 		ELSE
 		BEGIN
-		SET @ErrorMsg=CONCAT('Can`t find supply # ', @IdSupply);;
-		SELECT @ErrorMsg;
+		SET @ErrorMsg=CONCAT('Can`t find supply # ', @IdSupply);
 		END
+		SELECT @ErrorMsg;		
 	END;
 GO
 
@@ -145,12 +145,10 @@ GO
 DECLARE	@return_value int
 
 EXEC	@return_value = [dbo].[sp_ClosedSupply]
-		@IdSupply = 93,
+		@IdSupply = 95,
 		@IdFlower = 3,
 		@IdPlantation = 4,
 		@IdWarehouse = 3,
 		@Amount = 20
-
-
 GO
 
