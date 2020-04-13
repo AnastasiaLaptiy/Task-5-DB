@@ -1,9 +1,9 @@
 USE [FlowerSupplyDB];
 
--- DROP PROCEDURE IF EXISTS [dbo].[sp_ClosedSupply];
+-- DROP PROCEDURE IF EXISTS [dbo].[sp_ClosedSupply_TRAN];
 
 GO
-CREATE PROCEDURE [dbo].[sp_ClosedSupply](
+CREATE PROCEDURE [dbo].[sp_ClosedSupply_TRAN](
 	@IdSupply INT,
 	@IdFlower INT,
 	@IdPlantation INT,
@@ -120,7 +120,7 @@ AS
 				END
 				
 				COMMIT TRANSACTION [FlowerAmountUpd]
-
+				SET @ErrorMsg='The flower amount has changed';
 			END TRY
 
 			BEGIN CATCH
@@ -146,13 +146,28 @@ GO
 
 /*Test*/
 
+/*error msg*/
 USE [FlowerSupplyDB]
 GO
 
 DECLARE	@return_value int
 
-EXEC	@return_value = [dbo].[sp_ClosedSupply]
+EXEC	@return_value = [dbo].[sp_ClosedSupply_TRAN]
 		@IdSupply = 95,
+		@IdFlower = 3,
+		@IdPlantation = 4,
+		@IdWarehouse = 3,
+		@Amount = 20
+GO
+
+/*add supply date and status also change flower amount*/
+USE [FlowerSupplyDB]
+GO
+
+DECLARE	@return_value int
+
+EXEC	@return_value = [dbo].[sp_ClosedSupply_TRAN]
+		@IdSupply = 9,
 		@IdFlower = 3,
 		@IdPlantation = 4,
 		@IdWarehouse = 3,
