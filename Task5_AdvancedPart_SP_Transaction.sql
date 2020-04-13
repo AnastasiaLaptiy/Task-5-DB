@@ -12,7 +12,8 @@ CREATE PROCEDURE [dbo].[sp_ClosedSupply](
 	)
 AS
 	BEGIN	
-			DECLARE @Result bit = 0	
+			DECLARE @Result BIT = 0	
+			DECLARE @ErrorMsg VARCHAR(50)
 		IF EXISTS 
 			(SELECT 
 			[s].Id
@@ -25,9 +26,9 @@ AS
 		set @Result=(SELECT [FlowerSupplyDB].[dbo].[isFlowerSupplyReal](@IdFlower, @IdPlantation, @Amount))
 		IF 
 		@Result=1
-			BEGIN TRAN  [FlowerAmountUpd]
-				BEGIN TRY
-
+			BEGIN
+			BEGIN TRANSACTION [FlowerAmountUpd]
+				BEGIN TRY 
 				UPDATE [FlowerSupplyDB].[dbo].[Supply]
 				SET
 				[ClosedDate]=(SELECT GETDATE()),
@@ -118,13 +119,20 @@ AS
 					);
 				END
 				
-				COMMIT TRAN [FlowerAmountUpd]
+				COMMIT TRANSACTION [FlowerAmountUpd]
 
 			END TRY
 
+			BEGIN CATCH
+				IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION [FlowerAmountUpd]
+					END CATCH
 
-
+				END
 			END
+		ELSE
+		BEGIN
+		SET @ErrorMsg='“¿ Œ√Œ Õ≈“';
+		SELECT @ErrorMsg;
 		END
 	END;
 GO
@@ -138,12 +146,11 @@ DECLARE	@return_value int
 
 EXEC	@return_value = [dbo].[sp_ClosedSupply]
 		@IdSupply = 9,
-		@IdFlower = 4,
+		@IdFlower = 3,
 		@IdPlantation = 4,
 		@IdWarehouse = 3,
-		@Amount = 22220
+		@Amount = 20
 
-SELECT	'Return Value' = @return_value
 
 GO
 
