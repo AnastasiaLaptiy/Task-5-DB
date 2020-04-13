@@ -97,7 +97,7 @@ SELECT
 			and [s].[Id] = [sf].[SupplyId]
 			and [p].[Id] = [s].[PlantationId]
 			and [st].[Id] = [s].[StatusId]
-			and [p].[Id] = 1
+			and [p].[Id] = 3
 			--and [p].[Name] = 'Ame'
 			and [st].[Name] = 'Scheduled'
 				GROUP BY
