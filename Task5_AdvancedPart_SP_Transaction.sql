@@ -14,16 +14,56 @@ AS
 	BEGIN	
 			DECLARE @Result BIT = 0	
 			DECLARE @ErrorMsg VARCHAR(80)
-		IF EXISTS 
-			(SELECT 
-			[s].Id
-				FROM
-				[FlowerSupplyDB].[dbo].[Supply] [s]
-					WHERE
-					[s].Id=@IdSupply)
-		BEGIN
 
-		set @Result=(SELECT [FlowerSupplyDB].[dbo].[isFlowerSupplyReal](@IdFlower, @IdPlantation, @Amount))
+		IF NOT EXISTS 
+			(SELECT 
+			[f].Id
+				FROM
+				[FlowerSupplyDB].[dbo].[Flower] [f]
+					WHERE
+					[f].Id=@IdFlower)
+		BEGIN
+			SET @ErrorMsg=CONCAT(
+				'Can`t find flower with #',
+				(SELECT @IdFlower)); 
+			END	
+			
+			ELSE
+
+			BEGIN
+			IF NOT EXISTS 
+			(SELECT 
+			[p].Id
+				FROM
+				[FlowerSupplyDB].[dbo].[Plantation] [p]
+					WHERE
+					[p].Id=@IdPlantation)
+		BEGIN
+		SET @ErrorMsg=CONCAT(
+			'Can`t find Plantation with #',
+			(SELECT @IdPlantation)); 
+			END
+
+			ELSE
+
+			BEGIN
+			IF NOT EXISTS 
+				(SELECT 
+				[s].Id
+					FROM
+					[FlowerSupplyDB].[dbo].[Supply] [s]
+						WHERE
+						[s].Id=@IdSupply)
+		BEGIN
+		SET @ErrorMsg=CONCAT(
+			'Can`t find supply with #',
+			(SELECT @IdSupply));
+		END
+		
+		ELSE
+
+		BEGIN
+		SET @Result=(SELECT [FlowerSupplyDB].[dbo].[isFlowerSupplyReal](@IdFlower, @IdPlantation, @Amount))
 		IF 
 		@Result!=1
 				BEGIN
@@ -36,7 +76,9 @@ AS
 				(SELECT [p].[Name] FROM [FlowerSupplyDB].[dbo].[Plantation] [p] WHERE [p].[Id] = @IdPlantation)
 				);
 				END
+
 			ELSE
+
 				BEGIN
 					BEGIN TRANSACTION [FlowerAmountUpd]
 				BEGIN TRY 
@@ -138,14 +180,10 @@ AS
 				IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION [FlowerAmountUpd]
 					END CATCH
 
-				END
+				END	
 			END
-		ELSE
-		BEGIN
-		SET @ErrorMsg=CONCAT(
-			'Can`t find supply with #',
-			(SELECT @IdSupply));
 		END
+	END
 		SELECT @ErrorMsg;		
 	END;
 GO
@@ -177,6 +215,48 @@ EXEC	@return_value = [dbo].[sp_ClosedSupply_TRAN]
 		@IdFlower = 3,
 		@IdPlantation = 4,
 		@IdWarehouse = 3,
-		@Amount = 20
+		@Amount = 10
+GO
+
+/*Can`t add supply with 4560 Flower - Mimosa from Plantation - Kusa*/
+USE [FlowerSupplyDB]
+GO
+
+DECLARE	@return_value int
+
+EXEC	@return_value = [dbo].[sp_ClosedSupply_TRAN]
+		@IdSupply = 9,
+		@IdFlower = 3,
+		@IdPlantation = 4,
+		@IdWarehouse = 3,
+		@Amount = 4560
+GO
+
+/*Can`t find flower with #323*/
+USE [FlowerSupplyDB]
+GO
+
+DECLARE	@return_value int
+
+EXEC	@return_value = [dbo].[sp_ClosedSupply_TRAN]
+		@IdSupply = 9,
+		@IdFlower = 323,
+		@IdPlantation = 4,
+		@IdWarehouse = 3,
+		@Amount = 45333
+GO
+
+/*Can`t find Plantation with #44444*/
+USE [FlowerSupplyDB]
+GO
+
+DECLARE	@return_value int
+
+EXEC	@return_value = [dbo].[sp_ClosedSupply_TRAN]
+		@IdSupply = 9,
+		@IdFlower = 3,
+		@IdPlantation = 44444,
+		@IdWarehouse = 3,
+		@Amount = 45
 GO
 
