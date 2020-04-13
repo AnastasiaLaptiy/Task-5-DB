@@ -131,7 +131,7 @@ AS
 			END
 		ELSE
 		BEGIN
-		SET @ErrorMsg='ТАКОГО НЕТ';
+		SET @ErrorMsg='Такой поставки нет';
 		SELECT @ErrorMsg;
 		END
 	END;
@@ -145,7 +145,7 @@ GO
 DECLARE	@return_value int
 
 EXEC	@return_value = [dbo].[sp_ClosedSupply]
-		@IdSupply = 9,
+		@IdSupply = 93,
 		@IdFlower = 3,
 		@IdPlantation = 4,
 		@IdWarehouse = 3,
