@@ -25,9 +25,20 @@ AS
 
 		set @Result=(SELECT [FlowerSupplyDB].[dbo].[isFlowerSupplyReal](@IdFlower, @IdPlantation, @Amount))
 		IF 
-		@Result=1
-			BEGIN
-			BEGIN TRANSACTION [FlowerAmountUpd]
+		@Result!=1
+				BEGIN
+				SET @ErrorMsg=CONCAT(
+				'Can`t add supply with ',
+				(SELECT @Amount),
+				' Flower - ', 
+				(SELECT [f].[Name] FROM [FlowerSupplyDB].[dbo].[Flower] [f] WHERE [f].[Id] = @IdFlower),
+				' from Plantation - ',
+				(SELECT [p].[Name] FROM [FlowerSupplyDB].[dbo].[Plantation] [p] WHERE [p].[Id] = @IdPlantation)
+				);
+				END
+			ELSE
+				BEGIN
+					BEGIN TRANSACTION [FlowerAmountUpd]
 				BEGIN TRY 
 				UPDATE [FlowerSupplyDB].[dbo].[Supply]
 				SET
@@ -132,13 +143,8 @@ AS
 		ELSE
 		BEGIN
 		SET @ErrorMsg=CONCAT(
-			'Can`t add supply with ',
-			(SELECT @Amount),
-			' Flower - ', 
-			(SELECT [f].[Name] FROM [FlowerSupplyDB].[dbo].[Flower] [f] WHERE [f].[Id] = @IdFlower),
-			' from Plantation - ',
-			(SELECT [p].[Name] FROM [FlowerSupplyDB].[dbo].[Plantation] [p] WHERE [p].[Id] = @IdPlantation)
-			);
+			'Can`t find supply with #',
+			(SELECT @IdSupply));
 		END
 		SELECT @ErrorMsg;		
 	END;
