@@ -13,7 +13,7 @@ CREATE PROCEDURE [dbo].[sp_ClosedSupply](
 AS
 	BEGIN	
 			DECLARE @Result BIT = 0	
-			DECLARE @ErrorMsg VARCHAR(50)
+			DECLARE @ErrorMsg VARCHAR(80)
 		IF EXISTS 
 			(SELECT 
 			[s].Id
@@ -131,7 +131,14 @@ AS
 			END
 		ELSE
 		BEGIN
-		SET @ErrorMsg=CONCAT('Can`t find supply # ', @IdSupply);
+		SET @ErrorMsg=CONCAT(
+			'Can`t add supply with ',
+			(SELECT @Amount),
+			' Flower - ', 
+			(SELECT [f].[Name] FROM [FlowerSupplyDB].[dbo].[Flower] [f] WHERE [f].[Id] = @IdFlower),
+			' from Plantation - ',
+			(SELECT [p].[Name] FROM [FlowerSupplyDB].[dbo].[Plantation] [p] WHERE [p].[Id] = @IdPlantation)
+			);
 		END
 		SELECT @ErrorMsg;		
 	END;
