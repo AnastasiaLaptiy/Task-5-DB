@@ -17,11 +17,11 @@ AS
 
 		IF NOT EXISTS 
 			(SELECT 
-			[f].Id
+			[f].[Id]
 				FROM
 				[FlowerSupplyDB].[dbo].[Flower] [f]
 					WHERE
-					[f].Id=@IdFlower)
+					[f].[Id]=@IdFlower)
 		BEGIN
 			SET @ErrorMsg=CONCAT(
 				'Can`t find flower with #',
@@ -33,11 +33,11 @@ AS
 			BEGIN
 			IF NOT EXISTS 
 			(SELECT 
-			[p].Id
+			[p].[Id]
 				FROM
 				[FlowerSupplyDB].[dbo].[Plantation] [p]
 					WHERE
-					[p].Id=@IdPlantation)
+					[p].[Id]=@IdPlantation)
 		BEGIN
 		SET @ErrorMsg=CONCAT(
 			'Can`t find Plantation with #',
@@ -49,17 +49,41 @@ AS
 			BEGIN
 			IF NOT EXISTS 
 				(SELECT 
-				[s].Id
+				[s].[Id]
 					FROM
 					[FlowerSupplyDB].[dbo].[Supply] [s]
 						WHERE
-						[s].Id=@IdSupply)
+						[s].[Id] = @IdSupply)
 		BEGIN
 		SET @ErrorMsg=CONCAT(
 			'Can`t find supply with #',
 			(SELECT @IdSupply));
 		END
+
+		ELSE
+
+			BEGIN
+			IF NOT EXISTS 
+				(SELECT 
+				[s].[ClosedDate]
+					FROM
+					[FlowerSupplyDB].[dbo].[Supply] [s]
+						WHERE
+						[s].[Id] = @IdSupply
+						AND [s].ClosedDate IS NULL)
+		BEGIN
+		SET @ErrorMsg='Supply has had already closed';
+		END
 		
+		ELSE
+
+			BEGIN
+			IF  
+			 (@Amount <= 0)
+		BEGIN
+		SET @ErrorMsg='Amount should be >0';
+		END
+
 		ELSE
 
 		BEGIN
@@ -93,7 +117,7 @@ AS
 							[s].[Name]='Closed')
 					WHERE 
 				    [Id] = @IdSupply
-					and [WarehouseId] = @IdWarehouse --(SELECT [s].[WarehouseId] FROM [FlowerSupplyDB].[dbo].[Supply] [s] WHERE [s].[Id] = @IdSupply) 
+					and [WarehouseId] = @IdWarehouse -- = (SELECT [s].[WarehouseId] FROM [FlowerSupplyDB].[dbo].[Supply] [s] WHERE [s].[Id] = @IdSupply) 
 					and [PlantationId] = @IdPlantation;
 
 			IF EXISTS(
@@ -179,11 +203,12 @@ AS
 			BEGIN CATCH
 				IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION [FlowerAmountUpd]
 					END CATCH
-
+					END
 				END	
 			END
 		END
 	END
+END
 		SELECT @ErrorMsg;		
 	END;
 GO
@@ -204,7 +229,9 @@ EXEC	@return_value = [dbo].[sp_ClosedSupply_TRAN]
 		@Amount = 20
 GO
 
-/*add supply date and status also change flower amount*/
+/*case 1: add supply date and status also change flower amount*/
+
+/*case 2: Supply has had already closed*/
 USE [FlowerSupplyDB]
 GO
 
@@ -215,7 +242,7 @@ EXEC	@return_value = [dbo].[sp_ClosedSupply_TRAN]
 		@IdFlower = 3,
 		@IdPlantation = 4,
 		@IdWarehouse = 3,
-		@Amount = 10
+		@Amount = 5
 GO
 
 /*Can`t add supply with 4560 Flower - Mimosa from Plantation - Kusa*/
