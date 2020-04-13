@@ -131,7 +131,7 @@ AS
 			END
 		ELSE
 		BEGIN
-		SET @ErrorMsg='Такой поставки нет';
+		SET @ErrorMsg=CONCAT('Can`t find supply # ', @IdSupply);;
 		SELECT @ErrorMsg;
 		END
 	END;
