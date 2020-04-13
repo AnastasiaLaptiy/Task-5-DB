@@ -93,7 +93,7 @@ AS
 							[s].[Name]='Closed')
 					WHERE 
 				    [Id] = @IdSupply
-					and [WarehouseId] = @IdWarehouse
+					and [WarehouseId] = @IdWarehouse --(SELECT [s].[WarehouseId] FROM [FlowerSupplyDB].[dbo].[Supply] [s] WHERE [s].[Id] = @IdSupply) 
 					and [PlantationId] = @IdPlantation;
 
 			IF EXISTS(
@@ -152,13 +152,13 @@ AS
 					FROM [FlowerSupplyDB].[dbo].[WarehouseFlower] [wf]
 						WHERE 
 						[wf].[FlowerId]=@IdFlower
-						and [wf].WarehouseId=@IdWarehouse)
+						and [wf].WarehouseId=@IdWarehouse) -- = (SELECT [s].[WarehouseId] FROM [FlowerSupplyDB].[dbo].[Supply] [s] WHERE [s].[Id] = @IdSupply) 
 			BEGIN
 			UPDATE [FlowerSupplyDB].[dbo].[WarehouseFlower]
 				SET
 				[Amount]=[Amount]+@Amount
 					WHERE 
-					[WarehouseId] = @IdWarehouse
+					[WarehouseId] = @IdWarehouse -- = (SELECT [s].[WarehouseId] FROM [FlowerSupplyDB].[dbo].[Supply] [s] WHERE [s].[Id] = @IdSupply) 
 					and [FlowerId] = @IdFlower;
 			END
 			ELSE 
@@ -190,7 +190,7 @@ GO
 
 /*Test*/
 
-/*error msg*/
+/*Can`t find supply with #95*/
 USE [FlowerSupplyDB]
 GO
 
